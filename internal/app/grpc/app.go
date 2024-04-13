@@ -3,6 +3,7 @@ package grpcapp
 import (
 	"fmt"
 	trigger_hook_gRPC "github.com/fishmanDK/trigger_service/internal/grpc/trigger_hook"
+	"github.com/fishmanDK/trigger_service/internal/service"
 	"google.golang.org/grpc"
 	"log/slog"
 	"net"
@@ -14,10 +15,10 @@ type App struct {
 	port       int
 }
 
-func NewApp(log *slog.Logger, port int) *App {
+func NewApp(log *slog.Logger, service *service.Service, port int) *App {
 	gRPCServer := grpc.NewServer()
 
-	trigger_hook_gRPC.RegisterServerAPI(gRPCServer)
+	trigger_hook_gRPC.RegisterServerAPI(gRPCServer, service)
 
 	return &App{
 		log:        log,

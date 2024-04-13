@@ -19,7 +19,7 @@ func main() {
 
 	log.Info("starting application", slog.Any("config", cfg))
 
-	application := app.NewApp(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
+	application := app.NewApp(log, cfg.GRPC.Port, cfg.Postgres, cfg.TokenTTL)
 
 	application.GRPCSrv.Run()
 }
