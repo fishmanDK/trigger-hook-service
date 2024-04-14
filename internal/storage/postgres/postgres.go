@@ -42,8 +42,9 @@ func (p *Postgres) ScheduleFullDeletion(ctx context.Context, bannerID int64) err
 		INSERT INTO deletion_requests (bannerID, expires_at) VALUES 
 		($1, $2);
 	`
-
-	expiresAt := time.Now().Add(storage.Delay)
+	//expiresAt := time.Now().Add(storage.Delay).Format(time.RFC3339)
+	//expiresAt := time.Now().Add(storage.Delay).Format(time.RFC3339)
+	expiresAt := time.Now().Add(storage.Delay).UTC()
 
 	_, err := p.db.Exec(query, bannerID, expiresAt)
 	if err != nil {
@@ -51,19 +52,25 @@ func (p *Postgres) ScheduleFullDeletion(ctx context.Context, bannerID int64) err
 	}
 	return nil
 }
-func (p *Postgres) SchedulePartialDeletion(ctx context.Context, tagID, featureID int64) error {
+func (p *Postgres) ScheduleDeletion(ctx context.Context, bannerID, tagID, featureID int64) error {
 	const op = "postgres.SchedulePartialDeletion"
 
 	query := `
-		INSERT INTO deletion_requests (tagID, featureID, expires_at) VALUES 
-		($1, $2, $3);
+		INSERT INTO deletion_requests (bannerID, tagID, featureID, expires_at) VALUES 
+		($1, $2, $3, $4);
 	`
 
-	expiresAt := time.Now().Add(storage.Delay)
-
-	_, err := p.db.Exec(query, tagID, featureID, expiresAt)
-	if err != nil {
-		return fmt.Errorf("%s: %v", op, err)
+	expiresAt := time.Now().Add(storage.Delay).UTC()
+	if bannerID == 0 {
+		_, err := p.db.Exec(query, 0, tagID, featureID, expiresAt)
+		if err != nil {
+			return fmt.Errorf("%s: %v", op, err)
+		}
+	} else {
+		_, err := p.db.Exec(query, bannerID, 0, 0, expiresAt)
+		if err != nil {
+			return fmt.Errorf("%s: %v", op, err)
+		}
 	}
 
 	return nil

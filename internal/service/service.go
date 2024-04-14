@@ -15,7 +15,7 @@ type Service struct {
 
 type Deleter interface {
 	ScheduleFullDeletion(ctx context.Context, bannerID int64) error
-	SchedulePartialDeletion(ctx context.Context, tagID, FeatureID int64) error
+	ScheduleDeletion(ctx context.Context, bannerID, tagID, FeatureID int64) error
 }
 
 func NewService(
@@ -30,32 +30,32 @@ func NewService(
 	}
 }
 
-func (a *Service) ScheduleFullDeletion(ctx context.Context, bannerID int64) error {
-	const op = "service.ScheduleFullDeletion"
+//func (a *Service) ScheduleFullDeletion(ctx context.Context, bannerID int64) error {
+//	const op = "service.ScheduleFullDeletion"
+//
+//	log := a.log.With(
+//		slog.String("op", op),
+//	)
+//
+//	err := a.deleter.ScheduleDeletion(ctx, bannerID, tagID, featureID)
+//	if err != nil {
+//		log.Error("failed to make a new application", err)
+//		return fmt.Errorf("%s: %v", op, err)
+//	}
+//
+//	return nil
+//}
+
+func (a *Service) ScheduleDeletion(ctx context.Context, bannerID, tagID, featureID int64) error {
+	const op = "service.ScheduleDeletion"
 
 	log := a.log.With(
 		slog.String("op", op),
 	)
 
-	err := a.deleter.ScheduleFullDeletion(ctx, bannerID)
+	err := a.deleter.ScheduleDeletion(ctx, bannerID, tagID, featureID)
 	if err != nil {
-		log.Error("failed to make a new application")
-		return fmt.Errorf("%s: %v", op, err)
-	}
-
-	return nil
-}
-
-func (a *Service) SchedulePartialDeletion(ctx context.Context, tagID, FeatureID int64) error {
-	const op = "service.SchedulePartialDeletion"
-
-	log := a.log.With(
-		slog.String("op", op),
-	)
-
-	err := a.deleter.SchedulePartialDeletion(ctx, tagID, FeatureID)
-	if err != nil {
-		log.Error("failed to make a new application")
+		log.Error("failed to make a new application", err)
 		return fmt.Errorf("%s: %v", op, err)
 	}
 
