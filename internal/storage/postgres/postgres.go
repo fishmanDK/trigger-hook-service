@@ -42,8 +42,6 @@ func (p *Postgres) ScheduleFullDeletion(ctx context.Context, bannerID int64) err
 		INSERT INTO deletion_requests (bannerID, expires_at) VALUES 
 		($1, $2);
 	`
-	//expiresAt := time.Now().Add(storage.Delay).Format(time.RFC3339)
-	//expiresAt := time.Now().Add(storage.Delay).Format(time.RFC3339)
 	expiresAt := time.Now().Add(storage.Delay).UTC()
 
 	_, err := p.db.Exec(query, bannerID, expiresAt)

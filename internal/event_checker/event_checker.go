@@ -57,7 +57,7 @@ func (c *Checker) Run(timeTicker time.Duration) error {
 	selectQuery := `
 			SELECT id, bannerID, tagID, featureID 
 			FROM deletion_requests 
-			WHERE expires_at < now() AT TIME ZONE 'UTC';;
+			WHERE expires_at < now() AT TIME ZONE 'UTC';
 
 	`
 

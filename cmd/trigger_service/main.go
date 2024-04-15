@@ -31,7 +31,7 @@ func main() {
 		return
 	}
 	go func() {
-		if err := checker.Run(10 * time.Second); err != nil {
+		if err := checker.Run(1 * time.Minute); err != nil {
 			log.Error("event_checker stopped", err)
 		}
 	}()
